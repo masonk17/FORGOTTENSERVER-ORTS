@@ -2,6 +2,11 @@ local deathListEnabled = true
 local maxDeathRecords = 5
 
 function onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
+	local playerId, staminaTable = player.uid, Game.getStorageValue("stamina")
+	if staminaTable[playerId] then
+		staminaTable[playerId] = nil
+	end
+
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You are dead.')
 	if player:getStorageValue(Storage.SvargrondArena.Pit) > 0 then
 		player:setStorageValue(Storage.SvargrondArena.Pit, 0)
@@ -60,9 +65,9 @@ function onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDama
 		result.free(resultId)
 	end
 
-	while deathRecords > maxDeathRecords do
-		db.query('DELETE FROM `player_deaths` WHERE `player_id` = ' .. playerGuid .. ' ORDER BY `time` LIMIT 1')
-		deathRecords = deathRecords - 1
+	local limit = deathRecords - maxDeathRecords
+	if limit > 0 then
+		db.asyncQuery("DELETE FROM `player_deaths` WHERE `player_id` = " .. playerGuid .. " ORDER BY `time` LIMIT " .. limit)
 	end
 
 	if byPlayer == 1 then
@@ -71,7 +76,7 @@ function onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDama
 		if targetGuild ~= 0 then
 			local killerGuild = killer:getGuild()
 			killerGuild = killerGuild and killerGuild:getId() or 0
-			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer:getId()) then
+			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(playerId, killer.uid) then
 				local warId = false
 				resultId = db.storeQuery('SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = ' .. killerGuild .. ' AND `guild2` = ' .. targetGuild .. ') OR (`guild1` = ' .. targetGuild .. ' AND `guild2` = ' .. killerGuild .. '))')
 				if resultId ~= false then
@@ -80,7 +85,7 @@ function onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDama
 				end
 
 				if warId ~= false then
-					db.query('INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (' .. db.escapeString(killerName) .. ', ' .. db.escapeString(player:getName()) .. ', ' .. killerGuild .. ', ' .. targetGuild .. ', ' .. os.time() .. ', ' .. warId .. ')')
+					db.asyncQuery('INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (' .. db.escapeString(killerName) .. ', ' .. db.escapeString(player:getName()) .. ', ' .. killerGuild .. ', ' .. targetGuild .. ', ' .. os.time() .. ', ' .. warId .. ')')
 				end
 			end
 		end

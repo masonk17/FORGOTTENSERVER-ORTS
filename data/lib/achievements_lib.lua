@@ -25,7 +25,7 @@ Note: 	This lib was created following the data found in tibia.wikia.com.
 		Achievements with no points (or points equal to 0) are achievements with no available info about points in tibia.wikia.com. These achievements should be updated
 ]]
 
-ACHIEVEMENTS_BASE = 30000 -- base storage
+ACHIEVEMENTS_BASE = 300000 -- base storage
 ACHIEVEMENTS_ACTION_BASE = 20000 	--this storage will be used to save the process to obtain the certain achievement
 									--(Ex: this storage + the id of achievement 'Allowance Collector' to save...
 									-- ...how many piggy banks has been broken
@@ -540,4 +540,22 @@ function Player.getAchievementPoints(self)
 		end
 	end
 	return points
+end
+
+function Player.addAchievementProgress(self, ach, value)
+	local achievement = isNumber(ach) and getAchievementInfoById(ach) or getAchievementInfoByName(ach)
+	if not achievement then
+		print('[!] -> Invalid achievement "' .. ach .. '".')
+		return true
+	end
+
+	local storage = ACHIEVEMENTS_ACTION_BASE + achievement.id
+	local progress = self:getStorageValue(storage)
+	if progress < value then
+		self:setStorageValue(storage, math.max(1, progress) + 1)
+	elseif progress == value then
+		self:setStorageValue(storage, value + 1)
+		self:addAchievement(achievement.id)
+	end
+	return true
 end

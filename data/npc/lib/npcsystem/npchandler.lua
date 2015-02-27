@@ -59,6 +59,9 @@ if NpcHandler == nil then
 	TAG_ITEMCOUNT = "|ITEMCOUNT|"
 	TAG_TOTALCOST = "|TOTALCOST|"
 	TAG_ITEMNAME = "|ITEMNAME|"
+	TAG_TIME = "|TIME|"
+	TAG_BLESSCOST = "|BLESSCOST|"
+	TAG_PVPBLESSCOST = "|PVPBLESSCOST|"
 
 	NpcHandler = {
 		keywordHandler = nil,
@@ -306,8 +309,16 @@ if NpcHandler == nil then
 	-- Translates all message tags found in msg using parseInfo
 	function NpcHandler:parseMessage(msg, parseInfo)
 		local ret = msg
-		for search, replace in pairs(parseInfo) do
-			ret = string.gsub(ret, search, replace)
+		if type(ret) == 'string' then
+			for search, replace in pairs(parseInfo) do
+				ret = string.gsub(ret, search, replace)
+			end
+		else
+			for i = 1, #ret do
+				for search, replace in pairs(parseInfo) do
+					ret[i] = string.gsub(ret[i], search, replace)
+				end
+			end
 		end
 		return ret
 	end
@@ -353,7 +364,7 @@ if NpcHandler == nil then
 
 	-- Handles onCreatureAppear events. If you with to handle this yourself, please use the CALLBACK_CREATURE_APPEAR callback.
 	function NpcHandler:onCreatureAppear(creature)
-		local cid = creature:getId()
+		local cid = creature.uid
 		if cid == getNpcCid() then
 			local npc = Npc()
 			if next(self.shopItems) then
@@ -380,7 +391,7 @@ if NpcHandler == nil then
 
 	-- Handles onCreatureDisappear events. If you with to handle this yourself, please use the CALLBACK_CREATURE_DISAPPEAR callback.
 	function NpcHandler:onCreatureDisappear(creature)
-		local cid = creature:getId()
+		local cid = creature.uid
 		if getNpcCid() == cid then
 			return
 		end
@@ -397,7 +408,7 @@ if NpcHandler == nil then
 
 	-- Handles onCreatureSay events. If you with to handle this yourself, please use the CALLBACK_CREATURE_SAY callback.
 	function NpcHandler:onCreatureSay(creature, msgtype, msg)
-		local cid = creature:getId()
+		local cid = creature.uid
 		local callback = self:getCallback(CALLBACK_CREATURE_SAY)
 		if callback == nil or callback(cid, msgtype, msg) then
 			if self:processModuleCallback(CALLBACK_CREATURE_SAY, cid, msgtype, msg) then
@@ -424,7 +435,7 @@ if NpcHandler == nil then
 
 	-- Handles onPlayerEndTrade events. If you wish to handle this yourself, use the CALLBACK_PLAYER_ENDTRADE callback.
 	function NpcHandler:onPlayerEndTrade(creature)
-		local cid = creature:getId()
+		local cid = creature.uid
 		local callback = self:getCallback(CALLBACK_PLAYER_ENDTRADE)
 		if callback == nil or callback(cid) then
 			if self:processModuleCallback(CALLBACK_PLAYER_ENDTRADE, cid, msgtype, msg) then
@@ -439,7 +450,7 @@ if NpcHandler == nil then
 
 	-- Handles onPlayerCloseChannel events. If you wish to handle this yourself, use the CALLBACK_PLAYER_CLOSECHANNEL callback.
 	function NpcHandler:onPlayerCloseChannel(creature)
-		local cid = creature:getId()
+		local cid = creature.uid
 		local callback = self:getCallback(CALLBACK_PLAYER_CLOSECHANNEL)
 		if callback == nil or callback(cid) then
 			if self:processModuleCallback(CALLBACK_PLAYER_CLOSECHANNEL, cid, msgtype, msg) then
@@ -452,7 +463,7 @@ if NpcHandler == nil then
 
 	-- Handles onBuy events. If you wish to handle this yourself, use the CALLBACK_ONBUY callback.
 	function NpcHandler:onBuy(creature, itemid, subType, amount, ignoreCap, inBackpacks)
-		local cid = creature:getId()
+		local cid = creature.uid
 		local callback = self:getCallback(CALLBACK_ONBUY)
 		if callback == nil or callback(cid, itemid, subType, amount, ignoreCap, inBackpacks) then
 			if self:processModuleCallback(CALLBACK_ONBUY, cid, itemid, subType, amount, ignoreCap, inBackpacks) then
@@ -463,7 +474,7 @@ if NpcHandler == nil then
 
 	-- Handles onSell events. If you wish to handle this yourself, use the CALLBACK_ONSELL callback.
 	function NpcHandler:onSell(creature, itemid, subType, amount, ignoreCap, inBackpacks)
-		local cid = creature:getId()
+		local cid = creature.uid
 		local callback = self:getCallback(CALLBACK_ONSELL)
 		if callback == nil or callback(cid, itemid, subType, amount, ignoreCap, inBackpacks) then
 			if self:processModuleCallback(CALLBACK_ONSELL, cid, itemid, subType, amount, ignoreCap, inBackpacks) then
@@ -547,7 +558,7 @@ if NpcHandler == nil then
 					local msg_female = self:getMessage(MESSAGE_WALKAWAY_FEMALE)
 					local message_female = self:parseMessage(msg_female, parseInfo)
 					if message_female ~= message_male then
-						if Player(cid):getSex() == 0 then
+						if Player(cid):getSex() == PLAYERSEX_FEMALE then
 							selfSay(message_female)
 						else
 							selfSay(message_male)
@@ -629,8 +640,9 @@ if NpcHandler == nil then
 
 			local player = Player(focusId)
 			if player then
-				npc:say(message, TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
+				local parseInfo = {[TAG_PLAYERNAME] = player:getName(), [TAG_TIME] = getTibianTime(), [TAG_BLESSCOST] = getBlessingsCost(player:getLevel()), [TAG_PVPBLESSCOST] = getPvpBlessingCost(player:getLevel())}
+				npc:say(self:parseMessage(message, parseInfo), TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
 			end
-		end, self.talkDelayTime * 1000, Npc():getId(), message, focus)
+		end, self.talkDelayTime * 1000, Npc().uid, message, focus)
 	end
 end

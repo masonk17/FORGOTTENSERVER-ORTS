@@ -30,17 +30,17 @@
 	<immunities>
 		<immunity invisible="1"/>
 	</immunities>
-	<voices interval="5000" chance="10">
+	<voices interval="2000" chance="7">
 		<voice sentence="Let's kill 'em"/>
 		<voice sentence="Arrrgh!"/>
 		<voice sentence="You'll never take me alive!"/>
-		<voice sentence="§%§&§! #*$§$!!"/>
+		<voice sentence="§%§&amp;§! #*$§$!!"/>
 		<voice sentence="You won't get me alive!"/>
 	</voices>
 	<loot>
 		<item id="6102" chance="100000"/>					<!-- deadeye devious' eye patch -->
 		<item id="2148" countmax="140" chance="100000"/>	<!-- gold coin -->
-		<item id="2320" countmax="2" chance="85000"/>		<!-- skull -->
+		<item id="2229" countmax="2" chance="85000"/>		<!-- skull -->
 		<item id="2463" chance="78000"/>					<!-- plate armor -->
 		<item id="2666" countmax="3" chance="42000"/>		<!-- meat -->
 		<item id="2476" chance="28000"/>					<!-- knight armor -->

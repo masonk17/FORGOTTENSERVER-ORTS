@@ -31,7 +31,7 @@ local config = {
 	},
 	[3004] = {
 		items = {
-			{itemId = 2165}, {itemId = 2151, count = 2}, {itemId = 2230}, {itemId = 2229}, {itemId = 1948}, {itemId = 2091, actionId = 6010}
+			{itemId = 2229}, {itemId = 2151, count = 2}, {itemId = 2165}, {itemId = 2230}, {itemId = 2091, actionId = 6010}
 		},
 		storage = Storage.QuestChests.ParchmentRoomQuest
 	},
@@ -104,10 +104,10 @@ local config = {
 			{itemId = 2356}
 		},
 		storage = Storage.DjinnWar.MaridFaction.Mission03,
-		formerValue = 2,
-		newValue = 3,
+		formerValue = 1,
+		newValue = 2,
 		needItem = {itemId = 2344},
-		effect = CONST_ME_MAGIC_BLUE
+		effect = CONST_ME_MAGIC_RED
 	},
 	[3027] = {
 		items = {
@@ -174,7 +174,7 @@ local config = {
 	},
 	[3162] = {
 		items = {
-			{itemId = 11076}
+			{itemId = 11101}
 		},
 		storage = Storage.ChildrenoftheRevolution.Questline,
 		formerValue = 1,
@@ -199,6 +199,12 @@ local config = {
 			{itemId = 2089, actionId = 3303}
 		},
 		storage = Storage.QuestChests.OutlawCampKey3
+	},
+	[4010] = {
+		items = {
+			{itemId = 4843}
+		},
+		storage = Storage.TheApeCity.HolyApeHair
 	},
 	[5556] = {
 		items = {
@@ -246,11 +252,10 @@ local config = {
 	},
 	[12126] = {
 		items = {
-			{itemId = 4840}
+			{itemId = 4840, decay = true}
 		},
-		storage = Storage.TheApeCity.Mission06,
-		formerValue = 1,
-		newValue = 2
+		storage = Storage.TheApeCity.WitchesCapSpot,
+		time = true
 	},
 	[12331] = {
 		items = {
@@ -298,17 +303,18 @@ local config = {
 	}
 }
 
-function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
+function onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local useItem = config[item.uid]
 	if not useItem then
 		return true
 	end
 
-	if player:getStorageValue(useItem.storage) ~= (useItem.formerValue or -1) then
+	if (useItem.time and player:getStorageValue(useItem.storage) > os.time())
+			or player:getStorageValue(useItem.storage) ~= (useItem.formerValue or -1) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. ItemType(item.itemid):getName() .. ' is empty.')
 		return true
 	end
-	
+
 	if useItem.needItem then
 		if player:getItemCount(useItem.needItem.itemId) < (useItem.needItem.count or 1) then
 			return false
@@ -323,9 +329,9 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 
 	local result = ''
 	if reward then
-		local ret = ItemType(reward:getId())
+		local ret = ItemType(reward.itemid)
 		if ret:isRune() then
-			result = ret:getArticle() .. ' ' ..  ret:getName() .. ' (' .. reward:getSubType() .. ' charges)'
+			result = ret:getArticle() .. ' ' ..  ret:getName() .. ' (' .. reward.type .. ' charges)'
 		elseif reward:getCount() > 1 then
 			result = reward:getCount() .. ' ' .. ret:getPluralName()
 		elseif ret:getArticle() ~= '' then
@@ -342,7 +348,10 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 			reward:setText(items[1].text)
 		end
 
-		weight = weight + ret:getWeight(reward:getCount())
+		if items[1].decay then
+			reward:decay()
+		end
+
 	else
 		if size > 8 then
 			reward = Game.createItem(1988, 1)
@@ -363,15 +372,18 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 					tmp:setText(items[i].text)
 				end
 
-				weight = weight + ItemType(tmp:getId()):getWeight(tmp:getCount())
+				if items[i].decay then
+					tmp:decay()
+				end
+
 			end
 		end
-		local ret = ItemType(reward:getId())
+		local ret = ItemType(reward.itemid)
 		result = ret:getArticle() .. ' ' .. ret:getName()
-		weight = weight + ret:getWeight()
 	end
 
 	if player:addItemEx(reward) ~= RETURNVALUE_NOERROR then
+		local weight = reward:getWeight()
 		if player:getFreeCapacity() < weight then
 			player:sendCancelMessage('You have found ' .. result .. '. Weighing ' .. string.format('%.2f', (weight / 100)) .. ' oz, it is too heavy.')
 		else
@@ -397,6 +409,10 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 	end
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have found ' .. result .. '.')
-	player:setStorageValue(useItem.storage, useItem.newValue or 1)
+	if useItem.time then
+		player:setStorageValue(useItem.storage, os.time() + 86400)
+	else
+		player:setStorageValue(useItem.storage, useItem.newValue or 1)
+	end
 	return true
 end

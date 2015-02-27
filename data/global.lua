@@ -122,7 +122,7 @@ if not globalStorageTable then
 end
 
 function Game.getStorageValue(key)
-	return globalStorageTable[key]
+	return globalStorageTable[key] or -1
 end
 
 function Game.setStorageValue(key, value)
@@ -156,46 +156,46 @@ function Game.getSkillType(weaponType)
 end
 
 function Game.getReverseDirection(direction)
-	if direction == WEST then
-		return EAST
-	elseif direction == EAST then
-		return WEST
-	elseif direction == NORTH then
-		return SOUTH
-	elseif direction == SOUTH then
-		return NORTH
-	elseif direction == NORTHWEST then
-		return SOUTHEAST
-	elseif direction == NORTHEAST then
-		return SOUTHWEST
-	elseif direction == SOUTHWEST then
-		return NORTHEAST
-	elseif direction == SOUTHEAST then
-		return NORTHWEST
+	if direction == DIRECTION_WEST then
+		return DIRECTION_EAST
+	elseif direction == DIRECTION_EAST then
+		return DIRECTION_WEST
+	elseif direction == DIRECTION_NORTH then
+		return DIRECTION_SOUTH
+	elseif direction == DIRECTION_SOUTH then
+		return DIRECTION_NORTH
+	elseif direction == DIRECTION_NORTHWEST then
+		return DIRECTION_SOUTHEAST
+	elseif direction == DIRECTION_NORTHEAST then
+		return DIRECTION_SOUTHWEST
+	elseif direction == DIRECTION_SOUTHWEST then
+		return DIRECTION_NORTHEAST
+	elseif direction == DIRECTION_SOUTHEAST then
+		return DIRECTION_NORTHWEST
 	end
-	return NORTH
+	return DIRECTION_NORTH
 end
 
 function Position.getNextPosition(self, direction, steps)
 	steps = steps or 1
-	if direction == WEST then
+	if direction == DIRECTION_WEST then
 		self.x = self.x - steps
-	elseif direction == EAST then
+	elseif direction == DIRECTION_EAST then
 		self.x = self.x + steps
-	elseif direction == NORTH then
+	elseif direction == DIRECTION_NORTH then
 		self.y = self.y - steps
-	elseif direction == SOUTH then
+	elseif direction == DIRECTION_SOUTH then
 		self.y = self.y + steps
-	elseif direction == NORTHWEST then
+	elseif direction == DIRECTION_NORTHWEST then
 		self.x = self.x - steps
 		self.y = self.y - steps
-	elseif direction == NORTHEAST then
+	elseif direction == DIRECTION_NORTHEAST then
 		self.x = self.x + steps
 		self.y = self.y - steps
-	elseif direction == SOUTHWEST then
+	elseif direction == DIRECTION_SOUTHWEST then
 		self.x = self.x - steps
 		self.y = self.y + steps
-	elseif direction == SOUTHEAST then
+	elseif direction == DIRECTION_SOUTHEAST then
 		self.x = self.x + steps
 		self.y = self.y + steps
 	end
@@ -279,6 +279,19 @@ function Player.getDepotItems(self, depotId)
 	return self:getDepotChest(depotId, true):getItemHoldingCount()
 end
 
+function Player.getLossPercent(self)
+	local lossPercent = {
+		[0] = 100,
+		[1] = 70,
+		[2] = 45,
+		[3] = 25,
+		[4] = 10,
+		[5] = 0
+	}
+
+	return lossPercent[self:getBlessings()]
+end
+
 function Player.isUsingOtClient(self)
 	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX
 end
@@ -327,3 +340,5 @@ function Game.broadcastMessage(message, messageType)
 		player:sendTextMessage(messageType, message)
 	end
 end
+
+Game.setStorageValue("stamina", {})

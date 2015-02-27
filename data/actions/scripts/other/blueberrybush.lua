@@ -1,15 +1,8 @@
-function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
-	local blueberryBush = Item(item.uid)
-	blueberryBush:transform(2786)
-	blueberryBush:decay()
+function onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	item:transform(2786)
+	item:decay()
 	Game.createItem(2677, 3, fromPosition)
 
-	local cStorage = player:getStorageValue(Storage.Achievements.Bluebarian)
-	if cStorage < 500 then
-		player:setStorageValue(Storage.Achievements.Bluebarian, math.max(1, cStorage) + 1)
-	elseif cStorage == 500 then
-		player:addAchievement('Bluebarian')
-		player:setStorageValue(Storage.Achievements.Bluebarian, 501)
-	end
+	player:addAchievementProgress('Bluebarian', 500)
 	return true
 end

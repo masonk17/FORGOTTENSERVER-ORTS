@@ -30,7 +30,7 @@ local config = {
 }
 
 local function greetCallback(cid)
-	npcHandler:setMessage(MESSAGE_GREET, "Hello " .. (Player(cid):getSex() == 0 and "beautiful lady" or "handsome gentleman") .. ", welcome to the atrium of Pumin's Domain. We require some information from you before we can let you pass. Where do you want to go?")
+	npcHandler:setMessage(MESSAGE_GREET, "Hello " .. (Player(cid):getSex() == PLAYERSEX_FEMALE and "beautiful lady" or "handsome gentleman") .. ", welcome to the atrium of Pumin's Domain. We require some information from you before we can let you pass. Where do you want to go?")
 	return true
 end
 
@@ -49,7 +49,7 @@ local function creatureSayCallback(cid, type, msg)
 		end
 	elseif msgcontains(msg, player:getName()) then
 		if npcHandler.topic[cid] == 1 then
-			npcHandler:say("Alright " .. player:getName() ..". Vocation?", cid)
+			npcHandler:say("Alright |PLAYERNAME|. Vocation?", cid)
 			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, Vocation(vocationId):getName()) then

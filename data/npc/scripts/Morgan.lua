@@ -23,15 +23,12 @@ local function creatureSayCallback(cid, type, msg)
 			npcHandler:say('Ahh. So Duncan sent you, eh? You must have done something really impressive. Okay, take this fine sabre from me, mate.', cid)
 		end
 	elseif msgcontains(msg, 'warrior\'s sword') then
-		if player:hasOutfit(player:getSex() == 0 and 142 or 134, 2) then
+		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 142 or 134, 2) then
 			npcHandler:say('You already have this outfit!', cid)
 			return true
 		end
 
 		if player:getStorageValue(Storage.OutfitQuest.WarriorSwordAddon) < 1 then
-			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
-				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
-			end
 			player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 1)
 			npcHandler:say('Great! Simply bring me 100 iron ore and one royal steel and I will happily {forge} it for you.', cid)
 		elseif player:getStorageValue(Storage.OutfitQuest.WarriorSwordAddon) == 1 and npcHandler.topic[cid] == 1 then
@@ -42,13 +39,7 @@ local function creatureSayCallback(cid, type, msg)
 				player:addOutfitAddon(142, 2)
 				player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				local cStorage = Storage.Achievements.WildWarrior
-				if player:getStorageValue(cStorage) < 1 then
-					player:setStorageValue(cStorage, 1)
-				elseif player:getStorageValue(cStorage) == 1 then
-					player:addAchievement('Wild Warrior')
-					player:setStorageValue(cStorage, 2)
-				end
+				player:addAchievementProgress('Wild Warrior', 2)
 				npcHandler:say('Alright! As a matter of fact, I have one in store. Here you go!', cid)
 			else
 				npcHandler:say('You do not have all the required items.', cid)
@@ -56,16 +47,13 @@ local function creatureSayCallback(cid, type, msg)
 			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'knight\'s sword') then
-		if player:hasOutfit(player:getSex() == 0 and 139 or 131, 1) then
+		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 139 or 131, 1) then
 			npcHandler:say('You already have this outfit!', cid)
 			return true
 		end
 
-		if player:getStorageValue(Storage.OutfitQuest.KnightSwordAddon) < 1 then
-			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
-				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
-			end
-			player:setStorageValue(Storage.OutfitQuest.KnightSwordAddon, 1)
+		if player:getStorageValue(Storage.OutfitQuest.Knight.AddonSword) < 1 then
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonSword, 1)
 			npcHandler:say('Great! Simply bring me 100 Iron Ore and one Crude Iron and I will happily {forge} it for you.', cid)
 		elseif player:getStorageValue(Storage.OutfitQuest.KnightSwordAddon) == 1 and npcHandler.topic[cid] == 1 then
 			if player:getItemCount(5892) > 0 and player:getItemCount(5880) > 99 then
@@ -73,7 +61,7 @@ local function creatureSayCallback(cid, type, msg)
 				player:removeItem(5880, 100)
 				player:addOutfitAddon(131, 1)
 				player:addOutfitAddon(139, 1)
-				player:setStorageValue(Storage.OutfitQuest.KnightSwordAddon, 2)
+				player:setStorageValue(Storage.OutfitQuest.Knight.AddonSword, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				npcHandler:say('Alright! As a matter of fact, I have one in store. Here you go!', cid)
 			else

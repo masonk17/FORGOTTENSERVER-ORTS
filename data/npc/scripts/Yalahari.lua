@@ -121,8 +121,7 @@ local function creatureSayCallback(cid, type, msg)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission06, 5) -- StorageValue for Questlog "Mission 06: Frightening Fuel"
 			npcHandler.topic[cid] = 0
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 37 then
-			if player:getItemCount(9742) >= 1 then
-				player:removeItem( 9742, 1)
+			if player:removeItem(9742, 1) then
 				npcHandler:say({
 					"Ah, what an unexpected sight. I can almost feel the energy of the charm. It will help to recover some of the past wealth. ...",
 					"You did quite an impressive job. I'm considering to introduce you to my ma.. to my direct superior one day. But there are still other missions to fulfil."
@@ -178,7 +177,7 @@ local function creatureSayCallback(cid, type, msg)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission09, 1) -- StorageValue for Questlog "Mission 09: Decision"
 			npcHandler.topic[cid] = 0
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 49 or player:getStorageValue(Storage.InServiceofYalahar.Questline) == 48 then
-			npcHandler:say("So do you want to side with me " .. player:getName() .. "? ", cid)
+			npcHandler:say("So do you want to side with me |PLAYERNAME|? ", cid)
 			npcHandler.topic[cid] = 2
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 50 and player:getStorageValue(Storage.InServiceofYalahar.SideDecision) == 2 then
 			npcHandler:say({
@@ -203,8 +202,7 @@ local function creatureSayCallback(cid, type, msg)
 		end
 	elseif msgcontains(msg, "yes") then
 		if npcHandler.topic[cid] == 1 then
-			if player:getItemCount(9733) >= 1 then
-				player:removeItem( 9733, 1)
+			if player:removeItem(9733, 1) then
 				player:setStorageValue(Storage.InServiceofYalahar.BadSide, 1)
 				player:setStorageValue(Storage.InServiceofYalahar.Questline, 22)
 				player:setStorageValue(Storage.InServiceofYalahar.Mission03, 6) -- StorageValue for Questlog "Mission 03: Death to the Deathbringer"

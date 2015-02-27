@@ -5,8 +5,8 @@ local config = {
 	{fromPosition = Position(32673, 32093, 8), toPosition = Position(32672, 32071, 8), sacrificePosition = Position(32673, 32094, 8), sacrificeId = 2376, vocationId = 4}
 }
 
-function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
-	Item(item.uid):transform(item.itemid == 1945 and 1946 or 1945)
+function onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	item:transform(item.itemid == 1945 and 1946 or 1945)
 
 	if item.itemid ~= 1945 then
 		return true
@@ -32,7 +32,7 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 
 		local sacrificeItem = Tile(config[i].sacrificePosition):getItemById(config[i].sacrificeId)
 		if not sacrificeItem then
-			player:sendCancelMessage(creature:getName() .. ' is missing ' .. (creature:getSex() == 0 and 'her' or 'his') .. ' sacrifice on the altar.')
+			player:sendCancelMessage(creature:getName() .. ' is missing ' .. (creature:getSex() == PLAYERSEX_FEMALE and 'her' or 'his') .. ' sacrifice on the altar.')
 			position:sendMagicEffect(CONST_ME_POFF)
 			return true
 		end

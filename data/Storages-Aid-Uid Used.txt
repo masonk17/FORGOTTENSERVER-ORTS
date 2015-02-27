@@ -1,7 +1,7 @@
 ---//////////////////////////////////////////----
-Last Used Storage = 50213
-Last Used Aid = 50241
-Last Used Uid = 50134
+Last Used Storage = 50214
+Last Used Aid = 50244
+Last Used Uid = 50147
 ---//////////////////////////////////////////----
 ---//////////////////Storages////////////////////////----
 allowMovement Storage	=		100000 --Reserved to cancel player movement
@@ -167,6 +167,7 @@ Scale Armor Quest UID = 50076
 Isle of the Mists Quest UID = 50077
 Lone Medusa Quest UID = 50078
 First wand/rod storage = 50079
+
 Rook Santiago House Quest Coat UID = 50080
 Rook Santiago Cellar Snake Head Lever UID = 50081
 Rook Santiago Cellar Quest Torch Uid = 50082
@@ -231,11 +232,108 @@ Kaz wagons aid = 50230-50233
 
 Svarground Arena Quest Quest Log Storages = 50140-50142
 
-Diggable Swamp Tiles AID: 50234-50236, Storage Key: 50143
-
 Kazordoon exit AID: 50237-50238
 Wooden coffin (Family Brooch Quest) UID: 2286
 A Father's Burden Quest, UID: 3500-3505
 Rookgard levers aid 50239
 Rookgard level2check tiles aid 50240
 Rookgard premiumcheck tiles aid 50241
+
+Draconia Quest:
+	AID: 4246-4253
+	UID: 4006-4008
+
+Serpentine Tower (White Pearl):
+	aid: 5630, 5631
+Serpentine Tower (Torchbearer):
+	aid: 5632
+Serpentine Tower (Lever):
+	aid: 5633
+
+Edron Rope Quest:
+	aid: 4254
+	uid: 4009
+
+Bright Sword Quest:
+	entrance (aid): 5634
+
+Alawar's Vault Quest:
+	aid: 4210
+	uid: 9211-9214, 9230
+
+Sword Of Fury disappear:
+	aid: 5635, 5636
+
+Katana Quest (Rookgaard):
+	Key Corpse: 64110 (uid)
+	Katana Corpse: 64111 (uid)
+	Viking Helmet Corpse: 64112 (uid)
+	Door: 1002 (aid)
+	Lever: 5637 (aid)
+
+Bear Room Quest (Rookgaard):
+	Key Chest: 64113 (uid)
+	Lever: 5638
+	Reward Chests: 64114, 64115, 64116 (uid)
+
+Present Quest (Rookgaard): 64117 (uid)
+
+Captain Iglue Quest (Rookgaard): 64118 (uid)
+
+Combat Knife Quest (Rookgaard): 64119 (uid)
+
+Rapier Quest (Rookgaard): 64120 (uid)
+
+Double Quest: 5639 (aid) (Storage 64121)
+
+Dragon Corpse Quest (Rookgaard): 64122 (uid)
+
+Goblin Temple Quest (Rookgaard): 64123, 64124 (uid)
+
+Minotaur Hell Quest (Rookgaard): 64125, 64126, 64127 (uid)
+
+Brown Mushroom Quest (Rookgaard): 64128 (uid)
+
+Student Book Quest (Rookgaard): 64129 (uid)
+
+Amber's Logbook Quest (Rookgaard): 64130 (uid)
+
+Honey Flower Quest: 5640 (aid, also in events) (Storage 64131)
+Banana Palm Quest: 5641 (aid) (Storage 64132)
+
+The Ancient Of Tombs Quest
+	Chest Storage Uids = 12100-12109
+	Tomb Teleports Uid = 3951-3956
+
+	Thalas switches Aid = 50242
+	Thalas switches done teleport Uid = 50135
+	Thalas poison tile Uid = 50136
+
+	Diprath Switches Aid = 50243
+	Diprath Switches Done Teleport Uid = 50137
+
+	Ashmunrah Switches Aid = 50244
+	Ashmunrah Switches Done Teleport Uid = 50138
+
+	Morguthis Flames Uid = 50139-50145
+	Morguthis Done All Flames Uid = 50146
+	Morguthis Flames Storage Value = 50214-50220
+
+Dream Challenge Quest
+	Riddle Teleport Uid = 50147
+
+Pick only one item Quests (system.lua)
+	uid: 4011-4042
+
+Marid Entrance Door
+	aid: 50718
+
+Efreet Entrance Door
+	aid: 50719
+
+Roshamuul Carpet
+	aid: 4256
+
+Pythius The Rotten
+	aid: 50125-50127
+	storage: 9130, 12609

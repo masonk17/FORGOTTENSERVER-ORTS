@@ -28,18 +28,27 @@ Storage = {
 		packageDoor = 108
 	},
 	DjinnWar = {
-		Factions = 110,
+		Faction = {
+			Greeting = 50717,
+			Marid = 50718,
+			Efreet = 50719
+		},
+
+		RecievedLamp = 50720,
 
 		-- blue djinn
 		MaridFaction = {
+			Start = 110,
 			Mission01 = 111,
 			Mission02 = 112,
-			Mission03 = 113,
-			DoorToLamp = 114,
-			DoorToEfreetTerritory = 115
+			RataMari = 113,
+			Mission03 = 114,
+			DoorToLamp = 115,
+			DoorToEfreetTerritory = 116
 		},
 		-- green djinn
 		EfreetFaction = {
+			Start = 120,
 			Mission01 = 121,
 			Mission02 = 122,
 			Mission03 = 123,
@@ -117,6 +126,7 @@ Storage = {
 	},
 	ElementalSphere = {
 		QuestLine = 10000,
+		BossStorage = 10001,
 		MachineGemCount = 10002
 	},
 	GravediggerOfDrefia = {
@@ -203,7 +213,6 @@ Storage = {
 		Mission72 = 9948,
 		Mission73 = 9949,
 		Mission74 = 9876
-
 	},
 	OutfitQuest = {
 		DefaultStart = 12010, -- until all outfit quests are completed
@@ -250,14 +259,26 @@ Storage = {
 		HunterBodyAddon = 12054,
 		HunterHatAddon = 12055,
 
-		-- Knight-outfit Quest
-		KnightHatAddon = 12060,
-		KnightSwordAddon = 12061,
+		Hunter = {
+			AddonGlove = 12054,
+			AddonHat = 12055
+		},
 
-		-- Mage and Summoner-outfit Quest
-		MageSummonerWandAddon = 12062,
-		MageSummonerTiaraCloakAddon = 12063,
-		MageSummonerFluidBeltAddon = 12064,
+		Knight = {
+			AddonSword = 12153,
+
+			MissionHelmet = 12154,
+			AddonHelmet = 12155,
+			AddonHelmetTimer = 12156,
+			RamsaysHelmetDoor = 12160
+		},
+
+		MageSummoner = {
+			AddonWand = 12061,
+			AddonBelt = 12062,
+			MissionHatCloak = 12063,
+			AddonHatCloak = 12064
+		},
 
 		-- Nobleman Outfit
 		NoblemanFirstAddon = 12069,
@@ -288,33 +309,39 @@ Storage = {
 		BrotherhoodOutfit = 50084,
 		BrotherhoodDoor = 3044,
 
-		ShamanAddons = 50085,
+		Shaman = {
+			AddonStaffMask = 15000,
+			MissionStaff = 15001,
+			MissionMask = 15002
+		},
+
 		firstOrientalAddon = 50137,
 		secondOrientalAddon = 50138
 	},
 	TheAncientTombs = {
 		DefaultStart = 12100,
-		Omruc = 12101,
-		Thalas = 12102,
-		Diphtrah = 12103,
-		Mahrdis = 12104,
-		Vashresamun = 12105,
-		Morguthis = 12106,
-		Rahemos = 12107,
-		Ashmunrah = 12108,
-		VashresamunInstruments = 12109
+		VashresamunInstruments = 12109,
+		MorguthisBlueFlameStorage1 = 50214,
+		MorguthisBlueFlameStorage2 = 50215,
+		MorguthisBlueFlameStorage3 = 50216,
+		MorguthisBlueFlameStorage4 = 50217,
+		MorguthisBlueFlameStorage5 = 50218,
+		MorguthisBlueFlameStorage6 = 50219,
+		MorguthisBlueFlameStorage7 = 50220
 	},
 	TheApeCity = {
-		Questline = 12120, -- Storage through the Quest
-		Mission01 = 12121,
-		Mission02 = 12122,
-		Mission03 = 12123,
-		Mission04 = 12124,
-		Mission05 = 12125,
-		Mission06 = 12126,
-		Mission07 = 12127,
-		Mission08 = 12128,
-		Mission09 = 12129
+		Started = 12120,
+		Questline = 12121, -- Storage through the Quest
+		DworcDoor = 12122,
+		ChorDoor = 12123,
+		ParchmentDecyphering = 12124,
+		FibulaDoor = 12125,
+		WitchesCapSpot = 12126,
+		CasksDoor = 12127,
+		Casks = 12128,
+		HolyApeHair = 12129,
+		SnakeDestroyer = 12151,
+		ShamanOufit = 12152
 	},
 	TheNewFrontier = {
 		Questline = 12130, -- Storage through the Quest
@@ -510,7 +537,12 @@ Storage = {
 		Mission09 = 12458,
 		Mission10 = 12459,
 		Rank = 12460,
-		Door = 12461
+		Door = 12461,
+
+		TravelCarlin = 251,
+		TravelEdron = 252,
+		TravelVenore = 253,
+		TravelCormaya = 254
 	},
 	thievesGuild = {
 		Quest = 12501,
@@ -597,6 +629,19 @@ Storage = {
 			}
 		}
 	},
+	TheShatteredIsles = {
+		DefaultStart = 12700,
+		TheGovernorDaughter = 12701,
+		TheErrand = 12702,
+		AccessToMeriana = 12703,
+		APoemForTheMermaid = 12704,
+		ADjinnInLove = 12705,
+		AccessToLagunaIsland = 12706,
+		AccessToGoroma = 12707,
+		Shipwrecked = 12708,
+		DragahsSpellbook = 12709,
+		TheCounterspell = 12710
+	},
 	KillingInTheNameOf = {
 		LugriNecromancers = 50000,
 		LugriNecromancerCount = 50001,
@@ -651,7 +696,24 @@ Storage = {
 	},
 	SvargrondArena = {
 		Arena = 1100,
-		Pit = 1101
+		Pit = 1101,
+
+		QuestLogGreenhorn = 50140,
+		QuestLogScrapper = 50141,
+		QuestLogWarlord = 50142,
+
+		RewardGreenhorn = 26300,
+		RewardScrapper = 27300,
+		RewardWarlord = 28300,
+
+		TrophyGreenhorn = 1103,
+		TrophyScrapper = 1105,
+		TrophyWarlord = 1107,
+
+		-- Reward Doors
+		Greenhorn = 26100,
+		Scrapper = 27100,
+		Warlord = 28100
 	},
 	QuestChests = {
 		-- Todo: Move to a seperate range
@@ -681,6 +743,8 @@ Storage = {
 
 		DCQGhoul = 9155,
 
+		FirewalkerBoots = 9130,
+
 		DeeperFibulaKey = 9136,
 
 		SixRubiesQuest = 50057,
@@ -701,11 +765,28 @@ Storage = {
 		OutlawCampKey1 = 3301,
 		OutlawCampKey2 = 3302,
 		OutlawCampKey3 = 3303,
+
+		DoubletQuest = 64121,
+		HoneyFlower = 64131,
+		BananaPalm = 64132,
+
+		WhisperMoss = 50033,
+		OldParchment = 50034
 	},
 	PitsOfInferno = {
-		ShortcutHub = 8818,
-		ShortcutLevers = 8819,
-		Pumin = 50096
+		ShortcutHub = 8819,
+		ShortcutLevers = 8818,
+		Pumin = 50096,
+
+		WeaponReward = 10544,
+
+		ThroneInfernatil = 2080,
+		ThroneTafariel = 2081,
+		ThroneVerminor = 2082,
+		ThroneApocalypse = 2083,
+		ThroneBazir = 2084,
+		ThroneAshfalor = 2085,
+		ThronePumin = 2086
 	},
 	HorestisTomb = {
 		JarFloor1 = 50006,
@@ -789,18 +870,11 @@ Storage = {
 		LostMinesCrystal = 50255
 	},
 
-	-- Achievement storages
-	Achievements = {
-		PotionAddict = 50562,
-		AllowanceCollector = 50563,
-		Bluebarian = 50564,
-		WildWarrior = 50565,
-		DoctorDoctor = 50566,
-		Masquerader = 50567,
-		InteriorDecorator = 50568,
-		DeathOnStrike = 50569,
-		FallOfTheFallen = 50570,
-		DiplomaticImmunity = 50571
+	Diapason = {
+		Lyre = 500,
+		LyreTimer = 501,
+		Edala = 502,
+		EdalaTimer = 503
 	},
 
 	-- Promotion Storage cannot be changed, it is set in source code
@@ -808,6 +882,8 @@ Storage = {
 
 	SwampDiggingTimeout = 50143,
 	HydraEggQuest = 320,
+	Dragonfetish = 504,
+	EdronRopeQuest = 505,
 	GhostShipQuest = 5556,
 	OrcKingGreeting = 83,
 	MarkwinGreeting = 258,
@@ -819,12 +895,47 @@ Storage = {
 	madMageQuest = 50136,
 	KawillBlessing = 50139,
 	RentedHorseTimer = 50561,
+	FountainOfLife = 50572,
 	KnightwatchTowerDoor = 9054,
 
+	RookgaardHints = 50700,
+	RookgaardDestiny = 50701,
+
+	AdventurersGuild = {
+		Stone = 50702,
+		MagicDoor = 50703,
+
+		FreeStone = {
+			Alia = 50704,
+			Amanda = 50705,
+			Brewster = 50706,
+			Isimov = 50707,
+			Kasmir = 50708,
+			Kjesse = 50709,
+			Lorietta = 50710,
+			Maealil = 50711,
+			Quentin = 50712,
+			RockWithASoftSpot = 50713,
+			Tyrias = 50714,
+			Yberius = 50715,
+			Rahkem = 50716
+		}
+
+	},
+
+	DreamersChallenge = {
+		Reward = 9050
+	},
+
+	EruaranGreeting = 3250,
+	Factions = 50716,
+	MaryzaCookbook = 50721,
+	combatProtectionStorage = 50722,
 	blockMovementStorage = 100000
 }
 
 GlobalStorage = {
+	FuryGates = 100,
 	TheirMastersVoice = {
 		CurrentServantWave = 984,
 		ServantsKilled = 985
@@ -868,5 +979,11 @@ GlobalStorage = {
 		Machine3 = 10007,
 		Machine4 = 10008
 	},
-	NaginataStone = 50058
+	TheAncientTombs = {
+		ThalasSwitchesGlobalStorage = 200,
+		DiprathSwitchesGlobalStorage = 201,
+		AshmunrahSwitchesGlobalStorage = 202
+	},
+	NaginataStone = 50058,
+	SwordOfFury = 5635
 }

@@ -985,8 +985,8 @@
 	<house name="Upper Barracks 11" houseid="2418" entryx="32615" entryy="31914" entryz="5" rent="210" townid="3" size="4" />
 	<house name="Upper Barracks 12" houseid="2419" entryx="32615" entryy="31914" entryz="5" rent="210" townid="3" size="4" />
 	<house name="Low Waters Observatory" houseid="2420" entryx="33335" entryy="32763" entryz="6" rent="17165" townid="9" size="465" />
-	<house name="Eastern House of Tranquility" houseid="2421" entryx="33388" entryy="31453" entryz="4" rent="11120" townid="14" size="256" />
-	<house name="Mammoth House" houseid="2422" entryx="32234" entryy="31226" entryz="7" rent="9300" townid="12" size="158" />
+	<house name="Eastern House of Tranquility" houseid="2421" entryx="33389" entryy="31453" entryz="4" rent="11120" townid="14" size="256" />
+	<house name="Mammoth House" houseid="2422" entryx="32234" entryy="31227" entryz="7" rent="9300" townid="12" size="158" />
 	<house name="Lower Barracks 1" houseid="2427" entryx="32624" entryy="31906" entryz="9" rent="300" townid="3" size="7" />
 	<house name="Lower Barracks 2" houseid="2428" entryx="32625" entryy="31906" entryz="9" rent="300" townid="3" size="7" />
 	<house name="Lower Barracks 3" houseid="2429" entryx="32636" entryy="31906" entryz="9" rent="300" townid="3" size="7" />
@@ -1015,4 +1015,7 @@
 	<house name="Tunnel Gardens 1" houseid="2452" entryx="32606" entryy="31908" entryz="11" rent="2000" townid="3" size="20" />
 	<house name="Tunnel Gardens 2" houseid="2455" entryx="32606" entryy="31909" entryz="11" rent="2000" townid="3" size="20" />
 	<house name="The Yeah Beach Project" houseid="2456" entryx="32294" entryy="32555" entryz="6" rent="6525" townid="7" size="108" />
+	<house name="Hare's Den" houseid="2460" entryx="32687" entryy="32193" entryz="10" rent="7500" townid="3" size="165" />
+	<house name="Lost Cavern" houseid="2461" entryx="32559" entryy="31856" entryz="7" rent="14730" townid="3" size="502" />
+	<house name="Caveman Shelter" houseid="2462" entryx="33007" entryy="31426" entryz="6" rent="3780" townid="14" size="78" />
 </houses>

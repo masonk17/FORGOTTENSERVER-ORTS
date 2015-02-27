@@ -5,6 +5,7 @@ function playerExists(name)
 		result.free(resultId)
 		return true
 	end
+	return false
 end
 
 function isValidMoney(money)
@@ -70,54 +71,15 @@ function getAccountNumberByPlayerName(name)
 	return 0
 end
 
-function teleportAllPlayersFromArea(fromArea, toPos)
-	for x = fromArea[1].x, fromArea[2].x do
-		for y = fromArea[1].y, fromArea[2].y do
-			for z = fromArea[1].z, fromArea[2].z do
-				local creature = Tile(Position(x, y, z)):getTopCreature()
-				if creature and creature:isPlayer() then
-					creature:teleportTo(toPos)
-					toPos:sendMagicEffect(CONST_ME_TELEPORT)
-					creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You were teleported out by the gnomish emergency device.")
-				end
-			end
-		end
-	end
-	return true
-end
-
-function removeBoss(fromArea, bossName)
-	for x = fromArea[1].x, fromArea[2].x do
-		for y = fromArea[1].y, fromArea[2].y do
-			for z = fromArea[1].z, fromArea[2].z do
-				local creature = Tile(Position(x, y, z)):getTopCreature()
-				if creature and creature:isMonster() and creature:getName():lower() == bossName:lower() then
-					creature:remove()
-				end
+function iterateArea(func, from, to)
+	for z = from.z, to.z do
+		for y = from.y, to.y do
+			for x = from.x, to.x do
+				func(Position(x, y, z))
 			end
 		end
 	end
 end
-
-function clearArena(fromPos, toPos)
-	local exitPosition = Position(33049, 31017, 2)
-	for x = fromPos.x, toPos.x do
-		for y = fromPos.y, toPos.y do
-			for z = fromPos.z, toPos.z do
-				local creature = Tile(x, y, z):getTopCreature()
-				if creature then
-					if creature:isPlayer() then
-						creature:teleportTo(exitPosition)
-						exitPosition:sendMagicEffect(CONST_ME_TELEPORT)
-					else
-						creature:remove()
-					end
-				end
-			end
-		end
-	end
-end
-
 
 -- Game --
 function Game.getPlayersByIPAddress(ip, mask)
@@ -169,6 +131,13 @@ function Item.setDescription(self, description)
 	end
 end
 
+function Item.setUniqueId(self, uniqueId)
+	if type(uniqueId) ~= 'number' or uniqueId < 0 or uniqueId > 65535 then
+		return false
+	end
+
+	self:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, uniqueId)
+end
 
 -- Party --
 function Party.getVocationCount(self)
@@ -297,8 +266,25 @@ function Player.getCookiesDelivered(self)
 	return amount
 end
 
+function Player.isPromoted(self)
+	local vocation = self:getVocation()
+	local promotedVocation = vocation:getPromotion()
+	promotedVocation = promotedVocation and promotedVocation:getId() or 0
+
+	return promotedVocation == 0 and vocation:getId() ~= promotedVocation
+end
+
+function Player.hasRookgaardShield(self)
+	-- Wooden Shield, Studded Shield, Brass Shield, Plate Shield, Copper Shield
+	return self:getItemCount(2512) > 0
+			or self:getItemCount(2526) > 0
+			or self:getItemCount(2511) > 0
+			or self:getItemCount(2510) > 0
+			or self:getItemCount(2530) > 0
+end
+
 -- Tile --
-function Tile.relocateTo(self, toPosition)
+function Tile.relocateTo(self, toPosition, pushMove, monsterPosition)
 	if self:getPosition() == toPosition then
 		return false
 	end
@@ -311,11 +297,15 @@ function Tile.relocateTo(self, toPosition)
 		local thing = self:getThing(i)
 		if thing then
 			if thing:isItem() then
-				if ItemType(thing:getId()):isMovable() then
+				if ItemType(thing.itemid):isMovable() then
 					thing:moveTo(toPosition)
 				end
 			elseif thing:isCreature() then
-				thing:teleportTo(toPosition)
+				if monsterPosition and thing:isMonster() then
+					thing:teleportTo(monsterPosition, pushMove)
+				else
+					thing:teleportTo(toPosition, pushMove)
+				end
 			end
 		end
 	end
@@ -342,9 +332,4 @@ function Vocation.getBase(self)
 		demotion = tmp
 	end
 	return self
-end
-
-function Vocation.getPromotionId(self)
-	local promotion = self:getPromotion()
-	return promotion and promotion:getId() or 0
 end

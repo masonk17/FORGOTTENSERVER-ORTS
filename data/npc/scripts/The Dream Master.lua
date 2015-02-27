@@ -18,7 +18,7 @@ local function creatureSayCallback(cid, type, msg)
 			npcHandler:say({
 				"The Nightmare Knights are almost extinct now, and as far as I know I am the only teacher that is left. But you might beright and its time to accept new disciples ...",
 				"After all you have passed the Dream Challenge to reach this place, which used to be the process of initiation in the past...",
-				"So I ask you: do you wish to become a member of the ancient order of the Nightmare Knights, " .. player:getName() .. "?"
+				"So I ask you: do you wish to become a member of the ancient order of the Nightmare Knights, |PLAYERNAME|?"
 			}, cid)
 			npcHandler.topic[cid] = 1
 		end
@@ -47,8 +47,7 @@ local function creatureSayCallback(cid, type, msg)
 			player:addAchievement('Nightmare Knight')
 			npcHandler.topic[cid] = 0
 		elseif npcHandler.topic[cid] == 3 then
-			if player:getItemCount(6500) >= 500 then
-				player:removeItem(6500, 500)
+			if player:removeItem(6500, 500) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.NightmareOutfit, 2)
 				npcHandler:say("You advanced to {Initiate} rank! You are now able to use teleports of second floor of Knightwatch Tower.", cid)
@@ -57,8 +56,7 @@ local function creatureSayCallback(cid, type, msg)
 			end
 			npcHandler.topic[cid] = 0
 		elseif npcHandler.topic[cid] == 4 then
-			if player:getItemCount(6500) >= 1000 then
-				player:removeItem(6500, 1000)
+			if player:removeItem(6500, 1000) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.NightmareOutfit, 3)
 				player:addItem(6391, 1)
@@ -69,8 +67,7 @@ local function creatureSayCallback(cid, type, msg)
 			end
 			npcHandler.topic[cid] = 0
 		elseif npcHandler.topic[cid] == 5 then
-			if player:getItemCount(6500) >= 1500 then
-				player:removeItem(6500, 1500)
+			if player:removeItem(6500, 1500) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.NightmareOutfit, 4)
 				player:setStorageValue(Storage.OutfitQuest.NightmareDoor, 1)

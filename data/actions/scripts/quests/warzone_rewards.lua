@@ -4,7 +4,7 @@ local config = {
 	[9174] = {items = {{18402}, {18413, 10}, {18396}, {18508}, {2160, 4}, {18423, 2}}, storage = Storage.QuestChests.WarzoneReward3, containerId = 18394}
 }
 
-function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
+function onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local useItem = config[item.uid]
 	if not useItem then
 		return true
@@ -26,7 +26,7 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 	end
 
 	player:setStorageValue(cStorage, os.time() + 20 * 60 * 60)
-	local itemType = ItemType(container:getId())
+	local itemType = ItemType(container.itemid)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You have found ' .. itemType:getArticle() .. ' ' .. itemType:getName() .. '.')
 	return true
 end

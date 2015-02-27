@@ -33,6 +33,14 @@ local config = {
 	['glow wine'] = {itemid = 18448, token = {type = 'major', id = 18423, count = 20}}
 }
 
+local function setNewTradeTable(table)
+	local items = {}
+	for _, v in ipairs(table) do
+		items[v.id] = {itemId = v.id, buyPrice = v.buy, sellPrice = v.sell, subType = 0, realName = v.name}
+	end
+	return items
+end
+
 local function getTable()
 	local itemsList = {
 		{name = "bell", id = 18343, buy = 50},
@@ -134,7 +142,7 @@ local function creatureSayCallback(cid, type, msg)
 
 			local item = Game.createItem(targetTable.itemid, 1)
 			local weight = 0
-			weight = ItemType(item:getId()):getWeight(item:getCount())
+			weight = ItemType(item.itemid):getWeight(item:getCount())
 
 			if player:addItemEx(item) ~= RETURNVALUE_NOERROR then
 				if player:getFreeCapacity() < weight then
@@ -154,8 +162,7 @@ local function creatureSayCallback(cid, type, msg)
 			npcHandler.topic[cid] = 3
 		elseif npcHandler.topic[cid] == 4 then
 			local player = Player(cid)
-			if player:getItemCount(18422) >= renown[cid] then
-				player:removeItem(18422, renown[cid])
+			if player:removeItem(18422, renown[cid]) then
 				player:setStorageValue(Storage.BigfootBurden.Rank, math.max(0, player:getStorageValue(Storage.BigfootBurden.Rank)) + renown[cid] * 5)
 				npcHandler:say('As you wish! Your new renown is {' .. player:getStorageValue(Storage.BigfootBurden.Rank) .. '}.', cid)
 			else

@@ -1,14 +1,29 @@
+-- Players cannot throw items on teleports if set to true
+local blockTeleportTrashing = false
+
 function Player:onBrowseField(position)
 	return true
 end
 
 function Player:onLook(thing, position, distance)
-	local description = 'You see ' .. thing:getDescription(distance)
+	local description = 'You see '
+	if thing:isItem() then
+		if thing.actionid == 5640 then
+			description = description .. 'a honeyflower patch.'
+		elseif thing.actionid == 5641 then
+			description = description .. 'a banana palm.'
+		else
+			description = description .. thing:getDescription(distance)
+		end
+	else
+		description = description .. thing:getDescription(distance)
+	end
+
 	if self:getGroup():getAccess() then
 		if thing:isItem() then
-			description = string.format('%s\nItemID: [%d]', description, thing:getId())
+			description = string.format('%s\nItemID: [%d]', description, thing.itemid)
 
-			local actionId = thing:getActionId()
+			local actionId = thing.actionid
 			if actionId ~= 0 then
 				description = string.format('%s, ActionID: [%d]', description, actionId)
 			end
@@ -85,9 +100,8 @@ function Player:onLookInShop(itemType, count)
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition)
-	local tile = toPosition:getTile()
-	if tile then
-		local thing = tile:getItemByType(ITEM_TYPE_TELEPORT)
+	if blockTeleportTrashing and toPosition.x ~= CONTAINER_POSITION then
+		local thing = Tile(toPosition):getItemByType(ITEM_TYPE_TELEPORT)
 		if thing then
 			self:sendCancelMessage('Sorry, not possible.')
 			self:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -95,16 +109,16 @@ function Player:onMoveItem(item, count, fromPosition, toPosition)
 		end
 	end
 
-	if isInArray({1714, 1715, 1716, 1717, 1738, 1740, 1741, 1747, 1748, 1749}, item:getId()) and item:getActionId() > 0 then
+	if isInArray({1714, 1715, 1716, 1717, 1738, 1740, 1741, 1747, 1748, 1749}, item.itemid) and item.actionid > 0 or item.actionid == 5640 then
 		self:sendCancelMessage('You cannot move this object.')
 		return false
-	elseif item:getId() == 7466 then
+	elseif item.itemid == 7466 then
 		self:sendCancelMessage('You cannot move this object.')
 		return false
 	end
 
-	if fromPosition.x == 65535 and toPosition.x == 65535
-			and item:getId() == 8710 and self:getItemCount(8710) == 2 and self:getStorageValue(Storage.RookgaardTutorialIsland.cockroachLegsMsgStorage) ~= 1 then
+	if fromPosition.x == CONTAINER_POSITION and toPosition.x == CONTAINER_POSITION
+			and item.itemid == 8710 and self:getItemCount(8710) == 2 and self:getStorageValue(Storage.RookgaardTutorialIsland.cockroachLegsMsgStorage) ~= 1 then
 		self:sendTextMessage(MESSAGE_INFO_DESCR, 'Well done, you have enough cockroach legs! You should head back to Santiago with them. Climb the ladder to the north to exit.')
 		self:setStorageValue(Storage.RookgaardTutorialIsland.cockroachLegsMsgStorage, 1)
 		self:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoNpcGreetStorage, 6)
@@ -121,7 +135,7 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
-	if isInArray({1738, 1740, 1747, 1748, 1749, 8766}, item:getId()) and item:getActionId() > 0 then
+	if isInArray({1738, 1740, 1747, 1748, 1749, 8766}, item.itemid) and item.actionid > 0 or item.actionid == 5640 then
 		self:sendCancelMessage('Sorry, not possible.')
 		return false
 	end
@@ -132,7 +146,65 @@ function Player:onTradeAccept(target, item, targetItem)
 	return true
 end
 
+local soulCondition = Condition(CONDITION_SOUL, CONDITIONID_DEFAULT)
+soulCondition:setTicks(4 * 60 * 1000)
+soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
+
+local function useStamina(player)
+	local staminaMinutes = player:getStamina()
+	if staminaMinutes == 0 then
+		return
+	end
+
+	local playerId = player.uid
+	local currentTime = os.time()
+	local staminaTable = Game.getStorageValue("stamina")
+	local timePassed = currentTime - staminaTable[playerId]
+	if timePassed <= 0 then
+		return
+	end
+
+	if timePassed > 60 then
+		if staminaMinutes > 2 then
+			staminaMinutes = staminaMinutes - 2
+		else
+			staminaMinutes = 0
+		end
+		staminaTable[playerId] = currentTime + 120
+	else
+		staminaMinutes = staminaMinutes - 1
+		staminaTable[playerId] = currentTime + 60
+	end
+	player:setStamina(staminaMinutes)
+end
+
 function Player:onGainExperience(source, exp, rawExp)
+	if not source or source:isPlayer() then
+		return exp
+	end
+
+	-- Soul regeneration
+	local vocation = self:getVocation()
+	if self:getSoul() < vocation:getMaxSoul() and exp >= self:getLevel() then
+		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks() * 1000)
+		self:addCondition(soulCondition)
+	end
+
+	-- Apply experience stage multiplier
+	exp = exp * Game.getExperienceStage(self:getLevel())
+
+	-- Stamina modifier
+	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
+		useStamina(self)
+
+		local staminaMinutes = self:getStamina()
+		if staminaMinutes > 2400 and self:isPremium() then
+			exp = exp * 1.5
+		elseif staminaMinutes <= 840 then
+			exp = exp * 0.5
+		end
+	end
+
 	return exp
 end
 
@@ -141,5 +213,8 @@ function Player:onLoseExperience(exp)
 end
 
 function Player:onGainSkillTries(skill, tries)
+	if skill == SKILL_MAGLEVEL then
+		return tries * configManager.getNumber(configKeys.RATE_MAGIC)
+	end
 	return tries * configManager.getNumber(configKeys.RATE_SKILL)
 end

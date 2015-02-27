@@ -66,7 +66,7 @@ end
 local function greetCallback(cid)
 	local player = Player(cid)
 	if player:getStorageValue(JOIN_STOR) == -1 then
-		npcHandler:setMessage(MESSAGE_GREET, 'Welcome ' .. player:getName() .. '. Would you like to join the \'Paw and Fur - Hunting Elite\'?')
+		npcHandler:setMessage(MESSAGE_GREET, 'Welcome |PLAYERNAME|. Would you like to join the \'Paw and Fur - Hunting Elite\'?')
 	else
 		npcHandler:setMessage(MESSAGE_GREET, 'Welcome back old chap. What brings you here this time?')
 	end
@@ -208,7 +208,7 @@ local function creatureSayCallback(cid, type, msg)
 					end
 
 					player:setStorageValue(QUESTSTORAGE_BASE + id, (tasks[id].norepeatable and 2 or 0))
-					player:setStorageValue(KILLSSTORAGE_BASE + id, 0)
+					player:setStorageValue(KILLSSTORAGE_BASE + id, -1)
 					player:setStorageValue(REPEATSTORAGE_BASE + id, math.max(player:getStorageValue(REPEATSTORAGE_BASE + id), 0))
 					player:setStorageValue(REPEATSTORAGE_BASE + id, player:getStorageValue(REPEATSTORAGE_BASE + id) + 1)
 					finishedAtLeastOne = true

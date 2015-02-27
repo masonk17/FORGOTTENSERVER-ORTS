@@ -27,7 +27,7 @@ local function creatureSayCallback(cid, type, msg)
 	local player = Player(cid)
 
 	if msgcontains(msg, 'addon') then
-		if player:hasOutfit(player:getSex() == 0 and 156 or 152) and player:getStorageValue(Storage.OutfitQuest.AssassinFirstAddon) < 1 then
+		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 156 or 152) and player:getStorageValue(Storage.OutfitQuest.AssassinFirstAddon) < 1 then
 			npcHandler:say('Vescu gave you an assassin outfit? Haha. Noticed it lacks the head piece? You look a bit silly. Want my old head piece?', cid)
 			npcHandler.topic[cid] = 1
 		end
@@ -67,7 +67,7 @@ local function creatureSayCallback(cid, type, msg)
 				player:addOutfitAddon(152, 1)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
-			npcHandler:say(targetMessage.text[2]:gsub('|PLAYERNAME|', player:getName()), cid)
+			npcHandler:say(targetMessage.text[2], cid)
 			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'no') and npcHandler.topic[cid] > 0 then

@@ -1,16 +1,20 @@
 local specialQuests = {
-	[2215] = Storage.AnnihilatorDone, -- Annihilator
-	[2016] = 9050, -- Dreamer's Challenge Quest Boxes
-	[10544] = 10544,
+	[2215] = Storage.AnnihilatorDone,
+	[2016] = Storage.DreamersChallenge.Reward,
+	[10544] = Storage.PitsOfInferno.WeaponReward,
 	[12513] = Storage.thievesGuild.Reward,
 	[12374] = Storage.WrathoftheEmperor.mainReward,
-	[26300] = 26300,
-	[27300] = 27300,
-	[28300] = 28300
+	[26300] = Storage.SvargrondArena.RewardGreenhorn,
+	[27300] = Storage.SvargrondArena.RewardScrapper,
+	[28300] = Storage.SvargrondArena.RewardWarlord
 }
 
 local questsExperience = {
 	[2217] = 1 -- dummy values
+}
+
+local questLog = {
+	[9130] = Storage.hiddenCityOfBeregar.DefaultStart
 }
 
 local tutorialIds = {
@@ -20,7 +24,9 @@ local tutorialIds = {
 	[50086] = 11
 }
 
-function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
+local hotaQuest = {12102, 12103, 12104, 12105, 12106, 12107}
+
+function onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local storage = specialQuests[item.actionid]
 	if not storage then
 		storage = item.uid
@@ -34,13 +40,10 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 		return true
 	end
 
-	local useItem = Item(item.uid)
-	local items = {}
-	local reward = nil
-
-	local size = useItem:isContainer() and Container(item.uid):getSize() or 0
+	local items, reward = {}
+	local size = item:isContainer() and item:getSize() or 0
 	if size == 0 then
-		reward = useItem:clone()
+		reward = item:clone()
 	else
 		local container = Container(item.uid)
 		for i = 0, container:getSize() - 1 do
@@ -54,17 +57,17 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 	end
 
 	local result = ''
-	local weight = 0
 	if reward then
-		local ret = ItemType(reward:getId())
+		local ret = ItemType(reward.itemid)
 		if ret:isRune() then
-			result = ret:getArticle() .. ' ' ..  ret:getName() .. ' (' .. reward:getSubType() .. ' charges)'
+			result = ret:getArticle() .. ' ' ..  ret:getName() .. ' (' .. reward.type .. ' charges)'
 		elseif ret:isStackable() and reward:getCount() > 1 then
 			result = reward:getCount() .. ' ' .. ret:getPluralName()
-		else
+		elseif ret:getArticle() ~= '' then
 			result = ret:getArticle() .. ' ' .. ret:getName()
+		else
+			result = ret:getName()
 		end
-		weight = weight + ret:getWeight(reward:getCount())
 	else
 		if size > 20 then
 			reward = Game.createItem(item.itemid, 1)
@@ -78,34 +81,16 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 			local tmp = items[i]
 			if reward:addItemEx(tmp) ~= RETURNVALUE_NOERROR then
 				print('[Warning] QuestSystem:', 'Could not add quest reward to container')
-			else
-				local ret = ', '
-				if i == size then
-					ret = ' and '
-				elseif i == 1 then
-					ret = ''
-				end
-				result = result .. ret
-
-				local ret = ItemType(tmp:getId())
-				if ret:isRune() then
-					result = result .. ret:getArticle() .. ' ' .. ret:getName() .. ' (' .. tmp:getSubType() .. ' charges)'
-				elseif ret:isStackable() and tmp:getCount() > 1 then
-					result = result .. tmp:getCount() .. ' ' .. ret:getPluralName()
-				else
-					result = result .. ret:getArticle() .. ' ' .. ret:getName()
-				end
-				weight = weight + ret:getWeight(tmp:getCount())
 			end
 		end
-		weight = weight + ItemType(reward:getId()):getWeight()
+		local ret = ItemType(reward.itemid)
+		result = ret:getArticle() .. ' ' .. ret:getName()
 	end
 
-	weight = weight / 100
-
 	if player:addItemEx(reward) ~= RETURNVALUE_NOERROR then
-		if (player:getFreeCapacity() / 100) < weight then
-			player:sendCancelMessage('You have found ' .. result .. ' weighing ' .. string.format('%.2f', weight) .. ' oz. You have no capacity.')
+		local weight = reward:getWeight()
+		if player:getFreeCapacity() < weight then
+			player:sendCancelMessage(string.format('You have found %s weighing %.2f oz. You have no capacity.', result, (weight / 100)))
 		else
 			player:sendCancelMessage('You have found ' .. result .. ', but you have no room to take it.')
 		end
@@ -116,10 +101,20 @@ function onUse(player, item, fromPosition, itemEx, toPosition, isHotkey)
 		player:addExperience(questsExperience[storage], true)
 	end
 
+	if questLog[storage] then
+		player:setStorageValue(questLog[storage], 1)
+	end
+
 	if tutorialIds[storage] then
 		player:sendTutorial(tutorialIds[storage])
 		if item.uid == 50080 then
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoNpcGreetStorage, 3)
+		end
+	end
+
+	if isInArray(hotaQuest, item.uid) then
+		if player:getStorageValue(Storage.TheAncientTombs.DefaultStart) ~= 1 then
+			player:setStorageValue(Storage.TheAncientTombs.DefaultStart, 1)
 		end
 	end
 
